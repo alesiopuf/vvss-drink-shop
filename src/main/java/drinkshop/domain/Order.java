@@ -59,11 +59,7 @@ public class Order implements Serializable {
                 '}';
     }
 
-    public double getTotal() {
-        return totalPrice;
-    }
-
     public void computeTotalPrice() {
-        this.totalPrice=items.stream().mapToDouble(OrderItem::getTotal).sum();
+        this.totalPrice = items.stream().mapToDouble(OrderItem::getTotal).sum();
     }
 }
