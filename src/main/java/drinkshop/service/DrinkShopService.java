@@ -20,12 +20,11 @@ public class DrinkShopService {
             Repository<Integer, Product> productRepo,
             Repository<Integer, Order> orderRepo,
             Repository<Integer, Reteta> retetaRepo,
-            Repository<Integer, Stoc> stocService
-    ) {
+            Repository<Integer, Stoc> stocRepo) {
         this.productService = new ProductService(productRepo);
         this.orderService = new OrderService(orderRepo, productRepo);
         this.retetaService = new RetetaService(retetaRepo);
-        this.stocService = new StocService(stocService);
+        this.stocService = new StocService(stocRepo);
         this.report = new DailyReportService(orderRepo);
     }
 

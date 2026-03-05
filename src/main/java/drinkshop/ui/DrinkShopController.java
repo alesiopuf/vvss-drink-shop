@@ -17,36 +17,59 @@ public class DrinkShopController {
     private DrinkShopService service;
 
     // ---------- PRODUCT ----------
-    @FXML private TableView<Product> productTable;
-    @FXML private TableColumn<Product, Integer> colProdId;
-    @FXML private TableColumn<Product, String> colProdName;
-    @FXML private TableColumn<Product, Double> colProdPrice;
-    @FXML private TableColumn<Product, CategorieBautura> colProdCategorie;
-    @FXML private TableColumn<Product, TipBautura> colProdTip;
-    @FXML private TextField txtProdName, txtProdPrice;
-    @FXML private ComboBox<CategorieBautura> comboProdCategorie;
-    @FXML private ComboBox<TipBautura> comboProdTip;
+    @FXML
+    private TableView<Product> productTable;
+    @FXML
+    private TableColumn<Product, Integer> colProdId;
+    @FXML
+    private TableColumn<Product, String> colProdName;
+    @FXML
+    private TableColumn<Product, Double> colProdPrice;
+    @FXML
+    private TableColumn<Product, CategorieBautura> colProdCategorie;
+    @FXML
+    private TableColumn<Product, TipBautura> colProdTip;
+    @FXML
+    private TextField txtProdName, txtProdPrice;
+    @FXML
+    private ComboBox<CategorieBautura> comboProdCategorie;
+    @FXML
+    private ComboBox<TipBautura> comboProdTip;
 
     // ---------- RETETE ----------
-    @FXML private TableView<Reteta> retetaTable;
-    @FXML private TableColumn<Reteta, Integer> colRetetaId;
-    @FXML private TableColumn<Reteta, String> colRetetaDesc;
+    @FXML
+    private TableView<Reteta> retetaTable;
+    @FXML
+    private TableColumn<Reteta, Integer> colRetetaId;
+    @FXML
+    private TableColumn<Reteta, String> colRetetaDesc;
 
-    @FXML private TableView<IngredientReteta> newRetetaTable;
-    @FXML private TableColumn<IngredientReteta, String> colNewIngredName;
-    @FXML private TableColumn<IngredientReteta, Double> colNewIngredCant;
-    @FXML private TextField txtNewIngredName, txtNewIngredCant;
+    @FXML
+    private TableView<IngredientReteta> newRetetaTable;
+    @FXML
+    private TableColumn<IngredientReteta, String> colNewIngredName;
+    @FXML
+    private TableColumn<IngredientReteta, Double> colNewIngredCant;
+    @FXML
+    private TextField txtNewIngredName, txtNewIngredCant;
 
     // ---------- ORDER (CURRENT) ----------
-    @FXML private TableView<OrderItem> currentOrderTable;
-    @FXML private TableColumn<OrderItem, String> colOrderProdName;
-    @FXML private TableColumn<OrderItem, Integer> colOrderQty;
+    @FXML
+    private TableView<OrderItem> currentOrderTable;
+    @FXML
+    private TableColumn<OrderItem, String> colOrderProdName;
+    @FXML
+    private TableColumn<OrderItem, Integer> colOrderQty;
 
-    @FXML private ComboBox<Integer> comboQty;
-    @FXML private Label lblOrderTotal;
-    @FXML private TextArea txtReceipt;
+    @FXML
+    private ComboBox<Integer> comboQty;
+    @FXML
+    private Label lblOrderTotal;
+    @FXML
+    private TextArea txtReceipt;
 
-    @FXML private Label lblTotalRevenue;
+    @FXML
+    private Label lblTotalRevenue;
 
     private ObservableList<Product> productList = FXCollections.observableArrayList();
     private ObservableList<Reteta> retetaList = FXCollections.observableArrayList();
@@ -98,7 +121,7 @@ public class DrinkShopController {
         colOrderQty.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         currentOrderTable.setItems(currentOrderItems);
 
-        comboQty.setItems(FXCollections.observableArrayList(1,2,3,4,5,6,7,8,9,10));
+        comboQty.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
     }
 
     private void initData() {
@@ -111,25 +134,35 @@ public class DrinkShopController {
     // ---------- PRODUCT ----------
     @FXML
     private void onAddProduct() {
-        Reteta r=retetaTable.getSelectionModel().getSelectedItem();
+        Reteta r = retetaTable.getSelectionModel().getSelectedItem();
 
         if (r == null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("Selectati o reteta pentru care adugati un produs");
             alert.showAndWait();
             return;
-        }else
-        if (service.getAllProducts().stream().filter(p->p.getId()==r.getId()).toList().size()>0) {
+        } else if (service.getAllProducts().stream().filter(p -> p.getId() == r.getId()).toList().size() > 0) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Error");
             alert.setHeaderText("Exista un produs cu reteta adaugata.");
             alert.showAndWait();
             return;
         }
+        if (comboProdCategorie.getValue() == null || comboProdTip.getValue() == null) {
+            showError("Selectează categoria și tipul produsului.");
+            return;
+        }
+        double price;
+        try {
+            price = Double.parseDouble(txtProdPrice.getText());
+        } catch (NumberFormatException e) {
+            showError("Prețul trebuie să fie un număr valid.");
+            return;
+        }
         Product p = new Product(r.getId(),
                 txtProdName.getText(),
-                Double.parseDouble(txtProdPrice.getText()),
+                price,
                 comboProdCategorie.getValue(),
                 comboProdTip.getValue());
         service.addProduct(p);
@@ -139,9 +172,17 @@ public class DrinkShopController {
     @FXML
     private void onUpdateProduct() {
         Product selected = productTable.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        if (selected == null)
+            return;
+        double price;
+        try {
+            price = Double.parseDouble(txtProdPrice.getText());
+        } catch (NumberFormatException e) {
+            showError("Prețul trebuie să fie un număr valid.");
+            return;
+        }
         service.updateProduct(selected.getId(), txtProdName.getText(),
-                Double.parseDouble(txtProdPrice.getText()),
+                price,
                 comboProdCategorie.getValue(), comboProdTip.getValue());
         initData();
     }
@@ -149,7 +190,8 @@ public class DrinkShopController {
     @FXML
     private void onDeleteProduct() {
         Product selected = productTable.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
+        if (selected == null)
+            return;
         service.deleteProduct(selected.getId());
         initData();
     }
@@ -174,12 +216,13 @@ public class DrinkShopController {
     @FXML
     private void onDeleteNewIngred() {
         IngredientReteta sel = newRetetaTable.getSelectionModel().getSelectedItem();
-        if (sel != null) newRetetaList.remove(sel);
+        if (sel != null)
+            newRetetaList.remove(sel);
     }
 
     @FXML
     private void onAddNewReteta() {
-        Reteta r = new Reteta(service.getAllRetete().size()+1, new ArrayList<>(newRetetaList));
+        Reteta r = new Reteta(service.getAllRetete().size() + 1, new ArrayList<>(newRetetaList));
         service.addReteta(r);
         newRetetaList.clear();
         initData();

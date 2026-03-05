@@ -15,14 +15,15 @@ public class OrderValidator implements Validator<Order> {
         if (order.getId() <= 0)
             errors += "ID comanda invalid!\n";
 
-        if (order.getItems() == null || order.getItems().isEmpty())
+        if (order.getItems() == null || order.getItems().isEmpty()) {
             errors += "Comanda fara produse!\n";
-
-        for (OrderItem item : order.getItems()) {
-            try {
-                itemValidator.validate(item);
-            } catch (ValidationException e) {
-                errors += e.getMessage();
+        } else {
+            for (OrderItem item : order.getItems()) {
+                try {
+                    itemValidator.validate(item);
+                } catch (ValidationException e) {
+                    errors += e.getMessage();
+                }
             }
         }
 

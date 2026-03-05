@@ -7,7 +7,7 @@ public class Stoc {
     private double cantitate;
     private double stocMinim;
 
-    public Stoc(int id, String ingredient, int cantitate, int stocMinim) {
+    public Stoc(int id, String ingredient, double cantitate, double stocMinim) {
         this.id = id;
         this.ingredient = ingredient;
         this.cantitate = cantitate;
@@ -40,7 +40,7 @@ public class Stoc {
         this.cantitate = cantitate;
     }
 
-    public void setStocMinim(int stocMinim) {
+    public void setStocMinim(double stocMinim) {
         this.stocMinim = stocMinim;
     }
 
