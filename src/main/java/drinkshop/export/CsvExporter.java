@@ -22,10 +22,11 @@ public class CsvExporter {
                             .findFirst()
                             .orElse(null);
                     String prodName = (p != null) ? p.getNume() : "N/A";
-                    w.write(o.getId() + "," + prodName + "," + i.getQuantity() + "," + i.getTotal() + "," + o.getTotal()
+                    w.write(o.getId() + "," + prodName + "," + i.getQuantity() + "," + i.getTotal() + ","
+                            + o.getTotalPrice()
                             + "\n");
                 }
-                sum += o.getTotal();
+                sum += o.getTotalPrice();
             }
             String date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
             w.write(",,,TOTAL " + date + "," + sum + "\n");

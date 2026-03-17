@@ -30,7 +30,9 @@ public class DrinkShopController {
     @FXML
     private TableColumn<Product, TipBautura> colProdTip;
     @FXML
-    private TextField txtProdName, txtProdPrice;
+    private TextField txtProdName;
+    @FXML
+    private TextField txtProdPrice;
     @FXML
     private ComboBox<CategorieBautura> comboProdCategorie;
     @FXML
@@ -51,7 +53,9 @@ public class DrinkShopController {
     @FXML
     private TableColumn<IngredientReteta, Double> colNewIngredCant;
     @FXML
-    private TextField txtNewIngredName, txtNewIngredCant;
+    private TextField txtNewIngredName;
+    @FXML
+    private TextField txtNewIngredCant;
 
     // ---------- ORDER (CURRENT) ----------
     @FXML
