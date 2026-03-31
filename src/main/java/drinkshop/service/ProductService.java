@@ -19,6 +19,13 @@ public class ProductService {
     }
 
     public void updateProduct(int id, String name, double price, CategorieBautura categorie, TipBautura tip) {
+        if (price <= 0.0 || price > 500.0) {
+            throw new IllegalArgumentException("Prețul trebuie să fie în intervalul (0, 500].");
+        }
+        if (name == null || name.length() < 3 || name.length() > 50) {
+            throw new IllegalArgumentException("Numele trebuie să aibă între 3 și 50 de caractere.");
+        }
+
         Product updated = new Product(id, name, price, categorie, tip);
         productRepo.update(updated);
     }
