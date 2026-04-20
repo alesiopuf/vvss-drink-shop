@@ -1,0 +1,27 @@
+@startuml
+skinparam linestyle ortho
+
+() "1" as N1
+() "2" as N2
+() "3" as N3
+() "4" as N4
+() "5" as N5
+() "6" as N6
+() "7" as N7
+() "8" as N8
+() "OUT" as NOUT
+
+N1 --> N2 : T
+N1 --> N3 : F
+N2 --> NOUT
+N3 --> N4 : T
+N3 --> NOUT : F
+N4 --> N5
+N5 --> N6 : T
+N5 --> N3 : F
+N6 --> N7 : T
+N6 --> N8 : F
+N7 --> N3
+N8 --> N5
+
+@enduml
