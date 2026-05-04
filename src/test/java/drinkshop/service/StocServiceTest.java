@@ -1,17 +1,17 @@
 package drinkshop.service;
 
-import drinkshop.domain.IngredientReteta;
-import drinkshop.domain.Reteta;
-import drinkshop.domain.Stoc;
-import drinkshop.repository.Repository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import drinkshop.domain.IngredientReteta;
+import drinkshop.domain.Reteta;
+import drinkshop.domain.Stoc;
+import drinkshop.repository.Repository;
 
 public class StocServiceTest {
 
