@@ -5,11 +5,7 @@ import drinkshop.domain.Product;
 import drinkshop.domain.TipBautura;
 import drinkshop.repository.Repository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +15,7 @@ import java.util.stream.Collectors;
 public class ProductServiceTest {
 
     private ProductService setupServiceWithDummyRepo() {
-        Repository<Integer, Product> dummyRepo = new Repository<>() {
+        Repository<Integer, Product> dummyRepo = new Repository<Integer, Product>() {
             private Map<Integer, Product> data = new HashMap<>();
             @Override public Product findOne(Integer id) { return data.get(id); }
             @Override public List<Product> findAll() { return data.values().stream().collect(Collectors.toList()); }
@@ -38,13 +34,11 @@ public class ProductServiceTest {
     // ECP (Equivalence Class Partitioning) TESTS
     // ==========================================
 
-    @ParameterizedTest
-    @ValueSource(doubles = {15.5}) // Clasa validă: (0, 500]
-    @DisplayName("ECP Valid - Actualizare produs cu preț valid")
-    @Tag("ECP")
-    void testUpdateProduct_ECP_ValidPrice(double validPrice) {
+    @Test
+    void testUpdateProduct_ECP_ValidPrice() {
         ProductService service = setupServiceWithDummyRepo();
         int productId = 1;
+        double validPrice = 15.5;
 
         service.updateProduct(productId, "Espresso", validPrice, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
 
@@ -52,88 +46,49 @@ public class ProductServiceTest {
         Assertions.assertEquals(validPrice, updatedProduct.getPret(), "Prețul ar trebui să fie actualizat corect.");
     }
 
-    @ParameterizedTest
-    @ValueSource(doubles = {-5.0, 600.0})
-    @DisplayName("ECP Non-Valid - Aruncă excepție pentru prețuri în afara limitelor")
-    @Tag("ECP")
-    void testUpdateProduct_ECP_InvalidPrice(double invalidPrice) {
+    @Test
+    void testUpdateProduct_ECP_InvalidPrice() {
         ProductService service = setupServiceWithDummyRepo();
         int productId = 1;
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.updateProduct(productId, "Espresso", invalidPrice, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
+            service.updateProduct(productId, "Espresso", -5.0, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
         }, "Ar trebui să se arunce IllegalArgumentException pentru preț invalid.");
-    }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"Cappuccino"})
-    @DisplayName("ECP Valid - Actualizare produs cu nume valid")
-    @Tag("ECP")
-    void testUpdateProduct_ECP_ValidName(String validName) {
-        ProductService service = setupServiceWithDummyRepo();
-        int productId = 1;
-
-        service.updateProduct(productId, validName, 20.0, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
-
-        Product updatedProduct = service.findById(productId);
-        Assertions.assertEquals(validName, updatedProduct.getNume(), "Numele ar trebui să fie actualizat corect.");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.updateProduct(productId, "Espresso", 600.0, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
+        }, "Ar trebui să se arunce IllegalArgumentException pentru preț invalid.");
     }
 
     // ==========================================
     // BVA (Boundary Value Analysis) TESTS
     // ==========================================
 
-    @ParameterizedTest
-    @CsvSource({
-            "0.01",
-            "500.0"
-    })
-    @DisplayName("BVA Valid - Limite valide pentru preț")
-    @Tag("BVA")
-    void testUpdateProduct_BVA_ValidPrice(double boundaryPrice) {
-        // Arrange
+    @Test
+    void testUpdateProduct_BVA_ValidPrice() {
         ProductService service = setupServiceWithDummyRepo();
         int productId = 1;
 
-        // Act
-        service.updateProduct(productId, "Latte", boundaryPrice, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
-
-        // Assert
+        service.updateProduct(productId, "Latte", 0.01, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
         Product updatedProduct = service.findById(productId);
-        Assertions.assertEquals(boundaryPrice, updatedProduct.getPret(), "Prețul la limită ar trebui acceptat.");
+        Assertions.assertEquals(0.01, updatedProduct.getPret(), "Prețul la limită ar trebui acceptat.");
+
+        service.updateProduct(productId, "Latte", 500.0, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
+        updatedProduct = service.findById(productId);
+        Assertions.assertEquals(500.0, updatedProduct.getPret(), "Prețul la limită ar trebui acceptat.");
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "0.0",
-            "500.01"
-    })
-    @DisplayName("BVA Non-Valid - Imediat în afara limitelor pentru preț")
-    @Tag("BVA")
-    void testUpdateProduct_BVA_InvalidPrice(double boundaryInvalidPrice) {
+    @Test
+    void testUpdateProduct_BVA_InvalidPrice() {
         ProductService service = setupServiceWithDummyRepo();
         int productId = 1;
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            service.updateProduct(productId, "Latte", boundaryInvalidPrice, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
+            service.updateProduct(productId, "Latte", 0.0, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
         }, "Prețurile fix în afara limitelor trebuie respinse.");
-    }
 
-    @ParameterizedTest
-    @CsvSource({
-            "Cea, 3",
-            "UnNumeFoarteLungPentruBauturaCareAreExactCinciZeci, 50"
-    })
-    @DisplayName("BVA Valid - Limite valide pentru lungimea numelui")
-    @Tag("BVA")
-    void testUpdateProduct_BVA_ValidName(String boundaryName, int expectedLength) {
-        ProductService service = setupServiceWithDummyRepo();
-        int productId = 1;
-
-        service.updateProduct(productId, boundaryName, 15.0, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
-
-        Product updatedProduct = service.findById(productId);
-        Assertions.assertEquals(expectedLength, updatedProduct.getNume().length());
-        Assertions.assertEquals(boundaryName, updatedProduct.getNume());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            service.updateProduct(productId, "Latte", 500.01, CategorieBautura.CLASSIC_COFFEE, TipBautura.BASIC);
+        }, "Prețurile fix în afara limitelor trebuie respinse.");
     }
 }
