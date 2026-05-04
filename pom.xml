@@ -6,8 +6,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release> 
-    <javafx.version>17.0.10</javafx.version>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <javafx.version>11.0.2</javafx.version>
     <junit.version>5.10.0</junit.version>
   </properties>
 
@@ -54,7 +55,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.13.0</version>
             <configuration>
-                <release>17</release>
+                <source>11</source>
+                <target>11</target>
             </configuration>
         </plugin>
 

@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ProductServiceTest {
 
@@ -21,7 +22,7 @@ public class ProductServiceTest {
         Repository<Integer, Product> dummyRepo = new Repository<>() {
             private Map<Integer, Product> data = new HashMap<>();
             @Override public Product findOne(Integer id) { return data.get(id); }
-            @Override public List<Product> findAll() { return data.values().stream().toList(); }
+            @Override public List<Product> findAll() { return data.values().stream().collect(Collectors.toList()); }
             @Override public Product save(Product entity) { data.put(entity.getId(), entity); return entity; }
             @Override public Product delete(Integer id) { return data.remove(id); }
             @Override public Product update(Product entity) { data.put(entity.getId(), entity); return entity; }

@@ -4,8 +4,6 @@ import drinkshop.domain.Order;
 import drinkshop.repository.Repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class DailyReportService {
     private Repository<Integer, Order> repo;

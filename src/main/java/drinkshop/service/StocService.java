@@ -6,7 +6,7 @@ import drinkshop.domain.Stoc;
 import drinkshop.repository.Repository;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public class StocService {
 
@@ -62,7 +62,7 @@ public class StocService {
 
             List<Stoc> ingredienteStoc = stocRepo.findAll().stream()
                     .filter(s -> s.getIngredient().equalsIgnoreCase(ingredient))
-                    .toList();
+                    .collect(Collectors.toList());
 
             double ramas = necesar;
 
